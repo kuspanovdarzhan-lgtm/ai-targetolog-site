@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Личный кабинет — Orbit</title>
+<style>
+  :root{
+    --bg:#14110B; --bg-elev:#1D1811; --bg-elev-2:#241E14;
+    --border:#332A1B; --text:#F1EAD9; --text-dim:#A89C82;
+    --accent:#E3A53D; --accent-ink:#241804; --bad:#E07C63; --good:#8FBE71;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:'Segoe UI',system-ui,sans-serif;
+    padding:32px 16px 80px;
+  }
+  .wrap{max-width:640px;margin:0 auto;}
+  a{color:var(--accent);}
+  h1{font-size:22px;margin:0 0 6px;}
+  .sub{color:var(--text-dim);font-size:13.5px;margin:0 0 24px;line-height:1.6;}
+  .card{
+    background:var(--bg-elev);border:1px solid var(--border);
+    border-radius:10px;padding:22px;margin-bottom:16px;
+  }
+  .card h2{font-size:13px;margin:0 0 14px;color:var(--accent);text-transform:uppercase;letter-spacing:.04em;}
+  label{display:block;font-size:12.5px;color:var(--text-dim);margin:12px 0 5px;}
+  label:first-of-type{margin-top:0;}
+  input[type=text], textarea{
+    width:100%;background:var(--bg-elev-2);border:1px solid var(--border);
+    color:var(--text);border-radius:6px;padding:10px 12px;font-size:14px;
+    font-family:inherit;resize:vertical;
+  }
+  textarea{min-height:56px;}
+  .row{display:flex;gap:10px;flex-wrap:wrap;}
+  .row > div{flex:1;min-width:160px;}
+  .btn{
+    background:var(--accent);color:var(--accent-ink);border:none;
+    font-weight:700;font-size:13.5px;padding:11px 18px;border-radius:7px;
+    cursor:pointer;
+  }
+  .btn:disabled{opacity:.5;cursor:not-allowed;}
+  .btn-ghost{background:transparent;color:var(--text);border:1px solid var(--border);}
+  .msg{font-size:13px;margin-top:10px;min-height:18px;}
+  .msg.err{color:var(--bad);}
+  .msg.ok{color:var(--good);}
+  #login-card{max-width:380px;margin:60px auto 0;}
+  #dashboard{display:none;}
+  .who{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:8px;}
+  .who .name{font-weight:700;}
+  .usage{font-family:ui-monospace,Consolas,monospace;font-size:12px;color:var(--text-dim);}
+  .tools{display:flex;flex-direction:column;gap:14px;margin-top:8px;}
+  .tool{border-top:1px dashed var(--border);padding-top:14px;}
+  .tool:first-child{border-top:none;padding-top:0;}
+  .tool-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+  .tool-head h3{font-size:15px;margin:0;}
+  .tool-head p{font-size:12.5px;color:var(--text-dim);margin:2px 0 0;}
+  .out{
+    margin-top:10px;background:var(--bg-elev-2);border:1px solid var(--border);
+    border-radius:7px;padding:14px;font-size:13.5px;line-height:1.7;
+    white-space:pre-wrap;display:none;position:relative;
+  }
+  .out.show{display:block;}
+  .out img{max-width:100%;border-radius:6px;display:block;}
+  .copy-btn{
+    position:absolute;top:8px;right:8px;font-size:11px;padding:4px 9px;
+    background:var(--bg-elev);border:1px solid var(--border);color:var(--text-dim);
+    border-radius:5px;cursor:pointer;
+  }
+  .back-link{font-size:13px;color:var(--text-dim);text-decoration:none;display:inline-block;margin-bottom:18px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back-link" href="index.html">← Главная</a>
+
+  <div id="login-card" class="card">
+    <h2>Вход в кабинет</h2>
+    <p class="sub" style="margin-bottom:16px;">Код доступа выдаётся после оплаты подписки — напишите в WhatsApp, если ещё не получили.</p>
+    <label>Код доступа</label>
+    <input type="text" id="codeInput" placeholder="например a1b2c3d4">
+    <button class="btn" id="loginBtn" style="margin-top:14px;width:100%;">Войти</button>
+    <div class="msg err" id="loginMsg"></div>
+  </div>
+
+  <div id="dashboard">
+    <div class="who">
+      <div><div class="name" id="clientName"></div><div class="usage" id="clientTariff"></div></div>
+      <div style="text-align:right;">
+        <div class="usage" id="usageBar"></div>
+        <button class="btn-ghost" id="logoutBtn" style="border:none;background:none;color:var(--text-dim);font-size:12px;cursor:pointer;text-decoration:underline;">выйти</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Бриф</h2>
+      <label>Ниша / что продаём</label>
+      <input type="text" id="niche" placeholder="Например: доставка суши в Алматы">
+      <div class="row">
+        <div>
+          <label>Целевой клиент</label>
+          <input type="text" id="audience" placeholder="Молодёжь 20-35">
+        </div>
+        <div>
+          <label>Бюджет на рекламу / мес</label>
+          <input type="text" id="budget" placeholder="150 000 ₸">
+        </div>
+      </div>
+      <label>Оффер / акция (нужно для текстов объявлений)</label>
+      <input type="text" id="offer" placeholder="Скидка 20% в честь открытия">
+      <label>Доп. детали</label>
+      <textarea id="notes" placeholder="Необязательно"></textarea>
+    </div>
+
+    <div class="card">
+      <h2>Инструменты</h2>
+      <div class="tools">
+        <div class="tool">
+          <div class="tool-head">
+            <div><h3>ИИ-Стратег</h3><p>Анализ ниши, сегменты аудитории, позиционирование</p></div>
+            <button class="btn" data-tool="strategy">Сгенерировать</button>
+          </div>
+          <div class="msg" id="msg-strategy"></div>
+          <div class="out" id="out-strategy"><button class="copy-btn">Копировать</button><div class="out-text"></div></div>
+        </div>
+        <div class="tool">
+          <div class="tool-head">
+            <div><h3>ИИ-Копирайтер</h3><p>Текст рекламного объявления под ваш оффер</p></div>
+            <button class="btn" data-tool="copy">Сгенерировать</button>
+          </div>
+          <div class="msg" id="msg-copy"></div>
+          <div class="out" id="out-copy"><button class="copy-btn">Копировать</button><div class="out-text"></div></div>
+        </div>
+        <div class="tool">
+          <div class="tool-head">
+            <div><h3>ИИ-Дизайнер</h3><p>Креатив-картинка под объявление (дороже по лимиту)</p></div>
+            <button class="btn" data-tool="creative">Сгенерировать</button>
+          </div>
+          <div class="msg" id="msg-creative"></div>
+          <div class="out" id="out-creative"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const BACKEND_URL = "https://ai-targetolog-backend.onrender.com";
+const loginCard = document.getElementById('login-card');
+const dashboard = document.getElementById('dashboard');
+let session = null; // {code, name, tariff, limit, usedToday}
+
+function renderUsage(){
+  document.getElementById('clientName').textContent = session.name;
+  document.getElementById('clientTariff').textContent = 'Тариф ' + session.tariff;
+  document.getElementById('usageBar').textContent = `Сегодня использовано: ${session.usedToday} / ${session.limit}`;
+}
+
+async function login(code){
+  const msg = document.getElementById('loginMsg');
+  msg.textContent = '';
+  try {
+    const r = await fetch(`${BACKEND_URL}/api/clients/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code })
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || 'Ошибка входа');
+    session = { code, name: data.name, tariff: data.tariff, limit: data.limit, usedToday: data.usedToday };
+    localStorage.setItem('orbit_client_code', code);
+    loginCard.style.display = 'none';
+    dashboard.style.display = 'block';
+    renderUsage();
+  } catch (e) {
+    msg.textContent = e.message;
+  }
+}
+
+document.getElementById('loginBtn').addEventListener('click', () => {
+  const code = document.getElementById('codeInput').value.trim();
+  if (!code) return;
+  login(code);
+});
+document.getElementById('codeInput').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') document.getElementById('loginBtn').click();
+});
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  localStorage.removeItem('orbit_client_code');
+  session = null;
+  dashboard.style.display = 'none';
+  loginCard.style.display = 'block';
+});
+
+const savedCode = localStorage.getItem('orbit_client_code');
+if (savedCode) login(savedCode);
+
+function brief(){
+  return {
+    niche: document.getElementById('niche').value.trim(),
+    audience: document.getElementById('audience').value.trim(),
+    budget: document.getElementById('budget').value.trim(),
+    offer: document.getElementById('offer').value.trim(),
+    notes: document.getElementById('notes').value.trim(),
+  };
+}
+
+const WEIGHTS = { strategy: 1, copy: 1, creative: 5 };
+
+async function callTool(tool){
+  const b = brief();
+  const msgEl = document.getElementById('msg-' + tool);
+  const outEl = document.getElementById('out-' + tool);
+  msgEl.textContent = ''; msgEl.className = 'msg';
+  outEl.className = 'out';
+
+  if (!b.niche) { msgEl.textContent = 'Укажите нишу в брифе.'; msgEl.className = 'msg err'; return; }
+  if (tool === 'copy' && !b.offer) { msgEl.textContent = 'Для текстов объявлений нужен оффер/акция в брифе.'; msgEl.className = 'msg err'; return; }
+
+  let url, body;
+  if (tool === 'strategy') {
+    url = `${BACKEND_URL}/api/strategy`;
+    body = { niche: b.niche, audience: b.audience, budget: b.budget, notes: b.notes };
+  } else if (tool === 'copy') {
+    url = `${BACKEND_URL}/api/copy`;
+    body = { product: b.niche, audience: b.audience, offer: b.offer };
+  } else {
+    url = `${BACKEND_URL}/api/creative`;
+    body = { description: `${b.niche}. ${b.offer || ''}`.trim() };
+  }
+
+  msgEl.textContent = 'Думаю…';
+  try {
+    const r = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-client-code': session.code },
+      body: JSON.stringify(body)
+    });
+    const data = await r.json();
+    if (r.status === 401) { alert('Сессия недействительна, войдите заново.'); document.getElementById('logoutBtn').click(); return; }
+    if (r.status === 429) { msgEl.textContent = data.error; msgEl.className = 'msg err'; return; }
+    if (r.status === 503) { msgEl.textContent = 'ИИ пока не подключён — скоро заработает.'; msgEl.className = 'msg err'; return; }
+    if (!r.ok) throw new Error(data.error || ('HTTP ' + r.status));
+
+    if (tool === 'creative') {
+      outEl.innerHTML = `<img src="data:image/png;base64,${data.b64}" alt="Креатив">`;
+    } else {
+      outEl.innerHTML = `<button class="copy-btn">Копировать</button><div class="out-text"></div>`;
+      outEl.querySelector('.out-text').textContent = data.text;
+      outEl.querySelector('.copy-btn').addEventListener('click', (ev) => {
+        navigator.clipboard.writeText(data.text);
+        ev.target.textContent = 'Скопировано';
+        setTimeout(() => ev.target.textContent = 'Копировать', 1500);
+      });
+    }
+    outEl.className = 'out show';
+    msgEl.textContent = '';
+    session.usedToday += WEIGHTS[tool];
+    renderUsage();
+  } catch (e) {
+    msgEl.textContent = 'Ошибка: ' + e.message;
+    msgEl.className = 'msg err';
+  }
+}
+
+document.querySelectorAll('button[data-tool]').forEach(btn => {
+  btn.addEventListener('click', () => callTool(btn.dataset.tool));
+});
+</script>
+</body>
+</html>

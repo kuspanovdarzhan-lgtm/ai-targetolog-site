@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Orbit — админка клиентов</title>
+<style>
+  :root{
+    --bg:#14110B; --bg-elev:#1D1811; --bg-elev-2:#241E14;
+    --border:#332A1B; --text:#F1EAD9; --text-dim:#A89C82;
+    --accent:#E3A53D; --accent-ink:#241804; --bad:#E07C63; --good:#8FBE71;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;padding:32px 16px 80px;}
+  .wrap{max-width:760px;margin:0 auto;}
+  h1{font-size:20px;margin:0 0 20px;}
+  .card{background:var(--bg-elev);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:16px;}
+  .card h2{font-size:13px;margin:0 0 14px;color:var(--accent);text-transform:uppercase;letter-spacing:.04em;}
+  label{display:block;font-size:12.5px;color:var(--text-dim);margin:12px 0 5px;}
+  label:first-of-type{margin-top:0;}
+  input[type=text],input[type=password],select{
+    width:100%;background:var(--bg-elev-2);border:1px solid var(--border);color:var(--text);
+    border-radius:6px;padding:9px 11px;font-size:14px;font-family:inherit;
+  }
+  .row{display:flex;gap:10px;flex-wrap:wrap;}
+  .row > div{flex:1;min-width:140px;}
+  .btn{background:var(--accent);color:var(--accent-ink);border:none;font-weight:700;font-size:13.5px;padding:10px 16px;border-radius:7px;cursor:pointer;margin-top:14px;}
+  .btn-ghost{background:transparent;color:var(--text);border:1px solid var(--border);}
+  .msg{font-size:13px;margin-top:10px;}
+  .msg.err{color:var(--bad);}
+  .msg.ok{color:var(--good);}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px;}
+  th,td{padding:8px 6px;text-align:left;border-bottom:1px solid var(--border);}
+  th{color:var(--text-dim);font-size:11px;text-transform:uppercase;letter-spacing:.03em;}
+  code{background:var(--bg-elev-2);padding:2px 6px;border-radius:4px;font-size:12px;}
+  .mini{font-size:11px;padding:4px 8px;border-radius:5px;background:var(--bg-elev-2);border:1px solid var(--border);color:var(--text-dim);cursor:pointer;}
+  .newcode{background:var(--good-bg,rgba(143,190,113,.14));border:1px solid var(--good);border-radius:8px;padding:14px;margin-top:14px;display:none;}
+  .newcode.show{display:block;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Orbit — управление клиентами кабинета</h1>
+
+  <div class="card">
+    <h2>Admin key</h2>
+    <input type="password" id="adminKey" placeholder="ADMIN_API_KEY из .env бэкенда">
+    <button class="btn btn-ghost" id="saveKey">Сохранить в этом браузере</button>
+    <div class="msg" id="keyMsg"></div>
+  </div>
+
+  <div class="card">
+    <h2>Новый клиент</h2>
+    <div class="row">
+      <div><label>Имя клиента</label><input type="text" id="newName" placeholder="Например: Айгуль, суши-бар"></div>
+      <div><label>Тариф</label>
+        <select id="newTariff">
+          <option value="START">START</option>
+          <option value="PRO">PRO</option>
+          <option value="MAX">MAX</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn" id="createBtn">Создать и получить код</button>
+    <div class="msg" id="createMsg"></div>
+    <div class="newcode" id="newCodeBox">
+      Код доступа для клиента: <code id="newCodeText"></code>
+      <button class="mini" id="copyNewCode">Копировать</button>
+      <div style="margin-top:6px;color:var(--text-dim);font-size:12px;">Отправь этот код клиенту (WhatsApp) — он вводит его на странице /cabinet.html</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Все клиенты</h2>
+    <button class="btn btn-ghost" id="refreshBtn">Обновить список</button>
+    <div class="msg" id="listMsg"></div>
+    <table id="clientsTable" style="display:none;">
+      <thead><tr><th>Имя</th><th>Тариф</th><th>Код</th><th>Использовано сегодня</th><th>Статус</th><th></th></tr></thead>
+      <tbody id="clientsBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+const BACKEND_URL = "https://ai-targetolog-backend.onrender.com";
+const keyInput = document.getElementById('adminKey');
+const keyMsg = document.getElementById('keyMsg');
+const saved = localStorage.getItem('orbit_admin_key');
+if (saved) { keyInput.value = saved; keyMsg.textContent = 'Ключ загружен.'; keyMsg.className = 'msg ok'; }
+
+document.getElementById('saveKey').addEventListener('click', () => {
+  const v = keyInput.value.trim();
+  if (!v) return;
+  localStorage.setItem('orbit_admin_key', v);
+  keyMsg.textContent = 'Сохранено.';
+  keyMsg.className = 'msg ok';
+});
+
+function adminHeaders(){
+  return { 'Content-Type': 'application/json', 'x-api-key': localStorage.getItem('orbit_admin_key') || '' };
+}
+
+document.getElementById('createBtn').addEventListener('click', async () => {
+  const name = document.getElementById('newName').value.trim();
+  const tariff = document.getElementById('newTariff').value;
+  const msg = document.getElementById('createMsg');
+  const box = document.getElementById('newCodeBox');
+  msg.textContent = ''; box.className = 'newcode';
+  if (!name) { msg.textContent = 'Укажи имя клиента.'; msg.className = 'msg err'; return; }
+  try {
+    const r = await fetch(`${BACKEND_URL}/api/clients`, { method: 'POST', headers: adminHeaders(), body: JSON.stringify({ name, tariff }) });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || 'Ошибка');
+    document.getElementById('newCodeText').textContent = data.client.code;
+    box.className = 'newcode show';
+    document.getElementById('newName').value = '';
+    loadClients();
+  } catch (e) {
+    msg.textContent = 'Ошибка: ' + e.message;
+    msg.className = 'msg err';
+  }
+});
+
+document.getElementById('copyNewCode').addEventListener('click', (e) => {
+  navigator.clipboard.writeText(document.getElementById('newCodeText').textContent);
+  e.target.textContent = 'Скопировано';
+  setTimeout(() => e.target.textContent = 'Копировать', 1500);
+});
+
+async function loadClients(){
+  const msg = document.getElementById('listMsg');
+  const table = document.getElementById('clientsTable');
+  const body = document.getElementById('clientsBody');
+  msg.textContent = 'Загружаю…'; msg.className = 'msg';
+  try {
+    const r = await fetch(`${BACKEND_URL}/api/clients`, { headers: adminHeaders() });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || 'Ошибка');
+    body.innerHTML = '';
+    data.clients.forEach(c => {
+      const tr = document.createElement('tr');
+      const today = new Date().toISOString().slice(0,10);
+      const used = c.usageDate === today ? c.usageUnits : 0;
+      tr.innerHTML = `
+        <td>${c.name}</td>
+        <td>${c.tariff}</td>
+        <td><code>${c.code}</code></td>
+        <td>${used}</td>
+        <td>${c.active !== false ? 'активен' : 'выключен'}</td>
+        <td><button class="mini" data-id="${c.id}" data-active="${c.active !== false}">${c.active !== false ? 'выключить' : 'включить'}</button></td>
+      `;
+      body.appendChild(tr);
+    });
+    table.style.display = data.clients.length ? 'table' : 'none';
+    msg.textContent = data.clients.length ? '' : 'Пока нет клиентов.';
+    msg.className = 'msg';
+  } catch (e) {
+    msg.textContent = 'Ошибка: ' + e.message;
+    msg.className = 'msg err';
+  }
+}
+
+document.getElementById('clientsBody').addEventListener('click', async (e) => {
+  const btn = e.target.closest('button[data-id]');
+  if (!btn) return;
+  const id = btn.dataset.id;
+  const nextActive = btn.dataset.active !== 'true';
+  await fetch(`${BACKEND_URL}/api/clients/${id}`, { method: 'PATCH', headers: adminHeaders(), body: JSON.stringify({ active: nextActive }) });
+  loadClients();
+});
+
+document.getElementById('refreshBtn').addEventListener('click', loadClients);
+if (saved) loadClients();
+</script>
+</body>
+</html>
