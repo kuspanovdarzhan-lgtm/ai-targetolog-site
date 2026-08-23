@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI-Таргетолог — реклама, тексты и креативы под управлением ИИ</title>
+<title>Orbit — AI Targetologist: реклама, тексты и креативы под управлением ИИ</title>
 <style>
 
   @font-face{
@@ -245,17 +245,89 @@
 
   @media (max-width:560px){
     .rate-grid{grid-template-columns:1fr;}
-    .rate-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;}
-    .rate-row .name{margin-bottom:0;}
-    .rate-row .badge{position:absolute;top:-9px;left:12px;margin:0;background:var(--bg);padding:0 4px;}
-    .rate-row .price-label{display:none;}
   }
+
+  /* ---------- Topbar ---------- */
+  .topbar{border-bottom:1px solid var(--border);}
+  .topbar-inner{
+    max-width:640px;margin:0 auto;padding:16px 22px;
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+  }
+  .brand{font-family:var(--font-display);font-weight:700;font-size:16px;display:flex;align-items:baseline;gap:8px;}
+  .brand small{font-family:var(--font-mono);font-weight:400;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim);}
+  .btn-sm{padding:9px 16px;font-size:13px;}
+
+  /* ---------- Steps (how it works) ---------- */
+  .steps-list{display:flex;flex-direction:column;}
+  .step-row{
+    display:grid;grid-template-columns:40px 1fr;gap:16px;
+    padding:20px 0;border-bottom:1px dashed var(--border);
+  }
+  .step-row:first-child{padding-top:0;}
+  .step-row:last-child{border-bottom:none;}
+  .step-num{font-family:var(--font-mono);color:var(--accent);font-size:13px;padding-top:3px;font-variant-numeric:tabular-nums;}
+  .step-row h4{
+    font-family:var(--font-display);font-weight:600;font-size:16.5px;margin:0 0 7px;
+    display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  }
+  .step-time{
+    font-family:var(--font-mono);font-size:10.5px;color:var(--accent);
+    border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-weight:500;
+  }
+  .step-row p{color:var(--text-dim);font-size:14px;line-height:1.65;margin:0;max-width:54ch;}
+  .steps-total{margin-top:16px;font-family:var(--font-mono);font-size:12.5px;color:var(--text-dim);}
+  .steps-total b{color:var(--accent);}
+
+  /* ---------- Tool grid ---------- */
+  .tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .tool-card{
+    position:relative;background:var(--bg-elev);border:1px solid var(--border);
+    border-radius:10px;padding:18px 16px;
+  }
+  .tool-card .tool-badge{
+    position:absolute;top:12px;right:12px;
+    font-family:var(--font-mono);font-size:9px;letter-spacing:.05em;
+    color:var(--accent);border:1px solid var(--border);border-radius:4px;padding:2px 6px;
+  }
+  .tool-card h4{font-family:var(--font-display);font-weight:600;font-size:15px;margin:0 0 8px;padding-right:44px;}
+  .tool-card p{color:var(--text-dim);font-size:13px;line-height:1.6;margin:0;}
+  @media (max-width:560px){.tool-grid{grid-template-columns:1fr;}}
+
+  /* ---------- Rate features ---------- */
+  .rate-features{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:6px;}
+  .rate-features li{font-size:12px;color:var(--text-dim);padding-left:14px;position:relative;line-height:1.5;}
+  .rate-features li::before{content:"—";position:absolute;left:0;color:var(--accent);}
+
+  /* ---------- Comparison table ---------- */
+  .cmp-scroll{overflow-x:auto;border:1px solid var(--border);border-radius:10px;}
+  table.cmp{border-collapse:collapse;width:100%;min-width:560px;font-size:13px;}
+  table.cmp th,table.cmp td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;}
+  table.cmp th{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--text-dim);background:var(--bg-elev);}
+  table.cmp th.us,table.cmp td.us{background:var(--bg-elev-2);color:var(--accent);font-weight:600;}
+  table.cmp tr:last-child td{border-bottom:none;}
+  table.cmp td{color:var(--text-dim);}
+  table.cmp td.us{color:var(--text);}
+
+  /* ---------- Trust box ---------- */
+  .trust-box{
+    margin-top:52px;padding:22px 20px;border:1px dashed var(--border);border-radius:10px;
+    background:var(--bg-elev);
+  }
+  .trust-box p{color:var(--text-dim);font-size:13.5px;line-height:1.65;margin:0;}
+  .trust-box strong{color:var(--text);}
 </style>
 </head>
 <body>
 
+<div class="topbar">
+  <div class="topbar-inner">
+    <span class="brand">Orbit <small>AI Targetologist</small></span>
+    <a class="btn btn-ghost btn-sm" id="waBtnTop" href="#" target="_blank" rel="noopener">Обсудить →</a>
+  </div>
+</div>
+
 <header class="hero">
-  <p class="eyebrow">AI-Таргетолог</p>
+  <p class="eyebrow">ORBIT</p>
   <h1>Реклама, тексты и креативы под управлением ИИ</h1>
   <p class="lead">Один сервис вместо таргетолога, копирайтера, дизайнера и смм-щика: разбирает рынок, пишет объявления, собирает креативы и запускает рекламу в Instagram и Facebook — вы только подтверждаете.</p>
   <div class="hero-ctas">
@@ -268,46 +340,72 @@
 
   <section class="block">
     <div class="block-head">
-      <span class="num">01</span><h2>Что делает ИИ за вас</h2>
-      <h3>От анализа рынка до готовой рекламной кампании</h3>
+      <span class="num">01</span><h2>Как это работает</h2>
+      <h3>От брифа до запущенной кампании — без агентств и созвонов</h3>
     </div>
-    <div class="feature-list">
-      <div class="feature-row">
-        <div class="feature-num">01</div>
-        <div><h4>Анализ рынка и конкурентов</h4>
-        <p>ИИ смотрит, кто уже рекламируется в вашей нише, по какой цене и с каким посылом — и определяет, чем вам выгоднее выделиться.</p></div>
+    <div class="steps-list">
+      <div class="step-row">
+        <div class="step-num">01</div>
+        <div><h4>Бриф <span class="step-time">2 мин</span></h4>
+        <p>Коротко описываете нишу, продукт, бюджет и целевого клиента — прямо в чате, без анкет на 10 страниц.</p></div>
       </div>
-      <div class="feature-row">
-        <div class="feature-num">02</div>
-        <div><h4>Стратегия и тексты объявлений</h4>
-        <p>ИИ-копирайтер собирает несколько вариантов рекламных текстов под вашу нишу и аудиторию — не универсальный шаблон, а формулировки под конкретный оффер.</p></div>
+      <div class="step-row">
+        <div class="step-num">02</div>
+        <div><h4>ИИ-Стратег собирает стратегию <span class="step-time">30 сек</span></h4>
+        <p>Смотрит, кто уже рекламируется в нише, по какой цене и с каким посылом — и предлагает сегменты аудитории и позиционирование.</p></div>
       </div>
-      <div class="feature-row">
-        <div class="feature-num">03</div>
-        <div><h4>Креативы</h4>
-        <p>ИИ-дизайнер собирает визуалы под объявление — не нужно отдельно нанимать дизайнера на каждый баннер.</p></div>
+      <div class="step-row">
+        <div class="step-num">03</div>
+        <div><h4>ИИ-Копирайтер и ИИ-Дизайнер собирают кампанию <span class="step-time">~2 мин</span></h4>
+        <p>Несколько вариантов текстов объявлений и креативы под них — готово к показу, а не черновик для правок.</p></div>
       </div>
-      <div class="feature-row">
-        <div class="feature-num">04</div>
-        <div><h4>Согласование и запуск</h4>
-        <p>Перед стартом вы видите готовую кампанию целиком — тексты, креативы, бюджет — и подтверждаете запуск. Реклама идёт там и так, как нужно именно вам: площадка, формат, гео и бюджет вы задаёте сами.</p></div>
+      <div class="step-row">
+        <div class="step-num">04</div>
+        <div><h4>Согласование и запуск <span class="step-time">1 мин</span></h4>
+        <p>Вы видите кампанию целиком — тексты, креативы, бюджет — и одним подтверждением запускаете рекламу. Площадку, формат, гео и бюджет задаёте сами.</p></div>
       </div>
-      <div class="feature-row">
-        <div class="feature-num">05</div>
-        <div><h4>Контент-план</h4>
-        <p>Как у смм-щика — план публикаций на месяц вперёд, чтобы аккаунт не молчал между рекламными заходами.</p></div>
+    </div>
+    <p class="steps-total">Итого — <b>около 5 минут</b> от брифа до запущенной кампании.</p>
+  </section>
+
+  <section class="block">
+    <div class="block-head">
+      <span class="num">02</span><h2>6 ИИ-инструментов внутри Orbit</h2>
+      <h3>То, что раньше делала команда из нескольких специалистов</h3>
+    </div>
+    <div class="tool-grid">
+      <div class="tool-card">
+        <h4>ИИ-Стратег</h4>
+        <p>Анализ рынка и конкурентов, сегменты аудитории и позиционирование — за секунды, а не за дни брифинга.</p>
       </div>
-      <div class="feature-row">
-        <div class="feature-num">06</div>
-        <div><h4>Отчёты и заявки</h4>
-        <p>Статистика по кампании приходит в Telegram, а все заявки собираются в одном журнале — видно, кто пришёл и с какого объявления.</p></div>
+      <div class="tool-card">
+        <h4>ИИ-Копирайтер</h4>
+        <p>Несколько вариантов продающих текстов под нишу: экспертный тон, эмоциональный, через боль клиента.</p>
+      </div>
+      <div class="tool-card">
+        <h4>ИИ-Дизайнер</h4>
+        <p>Креативы под объявления — баннеры и карточки под форматы Instagram и Facebook.</p>
+      </div>
+      <div class="tool-card">
+        <span class="tool-badge">PRO/MAX</span>
+        <h4>Контент-план</h4>
+        <p>План публикаций на месяц вперёд, чтобы аккаунт не молчал между рекламными заходами.</p>
+      </div>
+      <div class="tool-card">
+        <h4>Отчёты и заявки</h4>
+        <p>Статистика по кампании и все заявки — в одном месте. Видно, кто пришёл и с какого объявления.</p>
+      </div>
+      <div class="tool-card">
+        <span class="tool-badge">ЖИВОЙ ЭКСПЕРТ</span>
+        <h4>Личный контроль</h4>
+        <p>Каждую кампанию перед запуском проверяет специалист — ИИ работает быстро, а решения принимает человек.</p>
       </div>
     </div>
   </section>
 
   <section class="block">
     <div class="block-head">
-      <span class="num">02</span><h2>Тарифы</h2>
+      <span class="num">03</span><h2>Тарифы</h2>
       <h3>Выбирайте по масштабу задач</h3>
     </div>
     <div class="rate-grid">
@@ -317,6 +415,11 @@
         <div class="price-label">1-й месяц</div>
         <div class="price">24 990 ₸</div>
         <div class="next">далее 24 990 ₸/мес</div>
+        <ul class="rate-features">
+          <li>ИИ-Стратег и ИИ-Копирайтер</li>
+          <li>ИИ-Дизайнер — базовые креативы</li>
+          <li>Запуск кампании, отчёты в Telegram</li>
+        </ul>
       </div>
       <div class="rate-row active">
         <span class="badge">ПОПУЛЯРНЫЙ</span>
@@ -324,6 +427,12 @@
         <div class="price-label">1-й месяц</div>
         <div class="price">59 990 ₸</div>
         <div class="next">далее 39 990 ₸/мес</div>
+        <ul class="rate-features">
+          <li>Всё из START, расширенные лимиты</li>
+          <li>Контент-план на месяц</li>
+          <li>Анализ конкурентов</li>
+          <li>Поддержка в WhatsApp</li>
+        </ul>
       </div>
       <div class="rate-row">
         <span class="badge"></span>
@@ -331,10 +440,49 @@
         <div class="price-label">1-й месяц</div>
         <div class="price">99 990 ₸</div>
         <div class="next">далее 49 990 ₸/мес</div>
+        <ul class="rate-features">
+          <li>Всё из PRO</li>
+          <li>Расширенный запуск кампаний</li>
+          <li>Лендинг под ключ</li>
+          <li>Личный менеджер</li>
+        </ul>
       </div>
     </div>
     <p class="tariff-note">Точный состав каждого тарифа (лимиты по рекламному бюджету, число кампаний, каналы отчётности) уточняйте в WhatsApp — цифры выше ориентировочные.</p>
   </section>
+
+  <section class="block">
+    <div class="block-head">
+      <span class="num">04</span><h2>Сравнение</h2>
+      <h3>Orbit рядом с другими вариантами</h3>
+    </div>
+    <div class="cmp-scroll">
+      <table class="cmp">
+        <thead>
+          <tr>
+            <th>Параметр</th>
+            <th class="us">Orbit</th>
+            <th>Таргетолог</th>
+            <th>Агентство</th>
+            <th>Сами</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Стоимость в месяц</td><td class="us">от 24 990 ₸</td><td>~200 000 ₸</td><td>300 000–500 000 ₸</td><td>0 ₸</td></tr>
+          <tr><td>Стратегия</td><td class="us">ИИ за 30 сек</td><td>Бриф + 2-3 дня</td><td>Готовый шаблон</td><td>Разбираетесь сами</td></tr>
+          <tr><td>Тексты объявлений</td><td class="us">ИИ-Копирайтер, сразу</td><td>По мере загрузки</td><td>+ отдельный копирайтер</td><td>Пишете сами</td></tr>
+          <tr><td>Креативы</td><td class="us">ИИ-Дизайнер</td><td>Ищет фрилансера</td><td>Штатный дизайнер</td><td>Canva</td></tr>
+          <tr><td>Доступность</td><td class="us">24/7 + проверка специалистом</td><td>Рабочие часы</td><td>Рабочие часы</td><td>—</td></tr>
+          <tr><td>Отчётность</td><td class="us">Каждую неделю, с рекомендациями</td><td>По запросу</td><td>По графику агентства</td><td>Смотрите в кабинете сами</td></tr>
+          <tr><td>Отпуск, болезнь, замена специалиста</td><td class="us">Не влияет на работу</td><td>Кампания встаёт на паузу</td><td>Меняется исполнитель</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="trust-box">
+    <p><strong>Orbit только запускается в Казахстане.</strong> Мы не показываем придуманные отзывы и цифры — честнее сказать прямо: сервис новый, первые кампании уже в работе. Если хотите быть в числе первых клиентов — напишите в WhatsApp, разберём вашу нишу бесплатно.</p>
+  </div>
 
   <div class="cta">
     <h3>Посчитайте, сколько это принесёт именно вам</h3>
@@ -353,8 +501,9 @@
 
 <script>
   const WHATSAPP_NUMBER = "77055419138";
-  const WHATSAPP_TEXT = "Здравствуйте, хочу узнать про AI-Таргетолог";
+  const WHATSAPP_TEXT = "Здравствуйте, хочу узнать про Orbit — AI Targetologist";
   const href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_TEXT)}`;
+  document.getElementById('waBtnTop').href = href;
   document.getElementById('waBtnHero').href = href;
   document.getElementById('waBtnCta').href = href;
 </script>
