@@ -315,6 +315,27 @@
   }
   .trust-box p{color:var(--text-dim);font-size:13.5px;line-height:1.65;margin:0;}
   .trust-box strong{color:var(--text);}
+
+  /* ---------- Free trial widget ---------- */
+  .trial-box{
+    margin:0 auto 8px;padding:24px 22px;border:1px solid var(--accent);border-radius:12px;
+    background:var(--bg-elev);
+  }
+  .trial-box h3{font-family:var(--font-display);font-weight:600;font-size:19px;margin:6px 0 8px;}
+  .trial-box > p{color:var(--text-dim);font-size:13.5px;line-height:1.6;margin:0 0 16px;}
+  .trial-row{display:flex;gap:8px;flex-wrap:wrap;}
+  .trial-row input{
+    flex:1;min-width:200px;background:var(--bg-elev-2);border:1px solid var(--border);
+    color:var(--text);border-radius:8px;padding:12px 14px;font-size:14px;font-family:inherit;
+  }
+  .trial-msg{font-size:13px;margin-top:10px;min-height:16px;}
+  .trial-msg.err{color:var(--bad);}
+  .trial-out{
+    margin-top:14px;background:var(--bg-elev-2);border:1px solid var(--border);
+    border-radius:8px;padding:14px;font-size:13.5px;line-height:1.7;
+    white-space:pre-wrap;display:none;
+  }
+  .trial-out.show{display:block;}
 </style>
 </head>
 <body>
@@ -340,6 +361,18 @@
 </header>
 
 <div class="wrap">
+
+  <div class="trial-box">
+    <p class="eyebrow" style="margin-bottom:8px;">Без регистрации</p>
+    <h3>Что ИИ скажет про вашу нишу?</h3>
+    <p>Впишите нишу — за 10 секунд получите кусочек настоящего анализа рынка от ИИ-Стратега. Бесплатно, один раз в день.</p>
+    <div class="trial-row">
+      <input type="text" id="trialNiche" placeholder="Например: барбершоп в Астане">
+      <button class="btn btn-primary" id="trialBtn">Попробовать →</button>
+    </div>
+    <div class="trial-msg" id="trialMsg"></div>
+    <div class="trial-out" id="trialOut"></div>
+  </div>
 
   <section class="block">
     <div class="block-head">
@@ -509,6 +542,42 @@
   document.getElementById('waBtnTop').href = href;
   document.getElementById('waBtnHero').href = href;
   document.getElementById('waBtnCta').href = href;
+
+  const BACKEND_URL = "https://ai-targetolog-backend.onrender.com";
+  const trialBtn = document.getElementById('trialBtn');
+  const trialNiche = document.getElementById('trialNiche');
+  const trialMsg = document.getElementById('trialMsg');
+  const trialOut = document.getElementById('trialOut');
+
+  async function runTrial(){
+    const niche = trialNiche.value.trim();
+    trialMsg.textContent = ''; trialMsg.className = 'trial-msg';
+    trialOut.className = 'trial-out';
+    if (!niche) { trialMsg.textContent = 'Впишите нишу.'; trialMsg.className = 'trial-msg err'; return; }
+
+    trialBtn.disabled = true;
+    trialMsg.textContent = 'Думаю…';
+    try {
+      const r = await fetch(`${BACKEND_URL}/api/free-trial`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ niche }),
+      });
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.error || ('HTTP ' + r.status));
+      trialOut.textContent = data.text;
+      trialOut.className = 'trial-out show';
+      trialMsg.textContent = '';
+    } catch (e) {
+      trialMsg.textContent = e.message;
+      trialMsg.className = 'trial-msg err';
+    } finally {
+      trialBtn.disabled = false;
+    }
+  }
+
+  trialBtn.addEventListener('click', runTrial);
+  trialNiche.addEventListener('keydown', (e) => { if (e.key === 'Enter') runTrial(); });
 </script>
 
 </body>
