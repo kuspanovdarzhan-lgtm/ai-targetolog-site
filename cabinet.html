@@ -74,6 +74,11 @@
     border-radius:5px;cursor:pointer;
   }
   .back-link{font-size:13px;color:var(--text-dim);text-decoration:none;display:inline-block;margin-bottom:18px;}
+  table.leads{width:100%;border-collapse:collapse;font-size:13px;margin-top:14px;}
+  table.leads th,table.leads td{padding:8px 6px;text-align:left;border-bottom:1px solid var(--border);}
+  table.leads th{color:var(--text-dim);font-size:10.5px;text-transform:uppercase;letter-spacing:.03em;}
+  table.leads td.del{cursor:pointer;color:var(--text-dim);}
+  table.leads td.del:hover{color:var(--bad);}
 </style>
 </head>
 <body>
@@ -160,7 +165,42 @@
           <div class="msg" id="msg-contentPlan"></div>
           <div class="out" id="out-contentPlan"><button class="copy-btn">Копировать</button><div class="out-text"></div></div>
         </div>
+        <div class="tool">
+          <div class="tool-head">
+            <div><h3>Отчёт по кампании</h3><p>Вставьте реальные цифры из Meta Ads Manager — получите разбор и что менять</p></div>
+            <button class="btn" data-tool="report">Проанализировать</button>
+          </div>
+          <div class="row" style="margin-top:10px;">
+            <div><label>Показы</label><input type="text" id="repImpressions" placeholder="12000"></div>
+            <div><label>Клики</label><input type="text" id="repClicks" placeholder="240"></div>
+          </div>
+          <div class="row">
+            <div><label>Расход, ₸</label><input type="text" id="repSpend" placeholder="150000"></div>
+            <div><label>Заявки</label><input type="text" id="repLeads" placeholder="18"></div>
+          </div>
+          <label>Доп. контекст</label>
+          <input type="text" id="repNotes" placeholder="Необязательно — что запускали, на кого">
+          <div class="msg" id="msg-report"></div>
+          <div class="out" id="out-report"><button class="copy-btn">Копировать</button><div class="out-text"></div></div>
+        </div>
       </div>
+    </div>
+
+    <div class="card">
+      <h2>Мои заявки</h2>
+      <p class="sub" style="margin-bottom:14px;">Пока нет автоматического трекинга рекламы — заносите заявки от клиентов сюда вручную, чтобы видеть их в одном месте.</p>
+      <div class="row">
+        <div><label>Имя</label><input type="text" id="leadName" placeholder="Айгуль"></div>
+        <div><label>Телефон</label><input type="text" id="leadPhone" placeholder="+7 700 000 00 00"></div>
+      </div>
+      <label>Источник</label>
+      <input type="text" id="leadSource" placeholder="Instagram реклама / сторис / рекомендация">
+      <button class="btn" id="addLeadBtn" style="margin-top:14px;">Добавить заявку</button>
+      <div class="msg" id="leadMsg"></div>
+      <table class="leads" id="leadsTable" style="display:none;">
+        <thead><tr><th>Имя</th><th>Телефон</th><th>Источник</th><th>Дата</th><th></th></tr></thead>
+        <tbody id="leadsBody"></tbody>
+      </table>
     </div>
   </div>
 
@@ -194,6 +234,7 @@ async function login(code){
     loginCard.style.display = 'none';
     dashboard.style.display = 'block';
     renderUsage();
+    loadLeads();
   } catch (e) {
     msg.textContent = e.message;
   }
@@ -227,7 +268,7 @@ function brief(){
   };
 }
 
-const WEIGHTS = { strategy: 1, copy: 1, creative: 5, contentPlan: 2 };
+const WEIGHTS = { strategy: 1, copy: 1, creative: 5, contentPlan: 2, report: 1 };
 
 async function callTool(tool){
   const b = brief();
@@ -236,7 +277,7 @@ async function callTool(tool){
   msgEl.textContent = ''; msgEl.className = 'msg';
   outEl.className = 'out';
 
-  if (!b.niche) { msgEl.textContent = 'Укажите нишу в брифе.'; msgEl.className = 'msg err'; return; }
+  if (tool !== 'report' && !b.niche) { msgEl.textContent = 'Укажите нишу в брифе.'; msgEl.className = 'msg err'; return; }
   if (tool === 'copy' && !b.offer) { msgEl.textContent = 'Для текстов объявлений нужен оффер/акция в брифе.'; msgEl.className = 'msg err'; return; }
 
   let url, body;
@@ -249,6 +290,17 @@ async function callTool(tool){
   } else if (tool === 'contentPlan') {
     url = `${BACKEND_URL}/api/content-plan`;
     body = { niche: b.niche, audience: b.audience, notes: b.notes };
+  } else if (tool === 'report') {
+    const spend = document.getElementById('repSpend').value.trim();
+    if (!spend) { msgEl.textContent = 'Укажите расход — без него не с чем сравнивать остальное.'; msgEl.className = 'msg err'; return; }
+    url = `${BACKEND_URL}/api/report`;
+    body = {
+      impressions: document.getElementById('repImpressions').value.trim(),
+      clicks: document.getElementById('repClicks').value.trim(),
+      spend,
+      leads: document.getElementById('repLeads').value.trim(),
+      notes: document.getElementById('repNotes').value.trim(),
+    };
   } else {
     url = `${BACKEND_URL}/api/creative`;
     const format = document.getElementById('creativeFormat').value;
@@ -292,6 +344,68 @@ async function callTool(tool){
 
 document.querySelectorAll('button[data-tool]').forEach(btn => {
   btn.addEventListener('click', () => callTool(btn.dataset.tool));
+});
+
+function fmtDate(iso){
+  const d = new Date(iso);
+  return d.toLocaleDateString('ru-RU') + ' ' + d.toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'});
+}
+
+async function loadLeads(){
+  const table = document.getElementById('leadsTable');
+  const body = document.getElementById('leadsBody');
+  try {
+    const r = await fetch(`${BACKEND_URL}/api/client-leads`, {
+      headers: { 'x-client-code': session.code }
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || 'Ошибка загрузки');
+    body.innerHTML = '';
+    data.leads.forEach(l => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${l.name}</td><td>${l.phone || '—'}</td><td>${l.source || '—'}</td><td>${fmtDate(l.createdAt)}</td><td class="del" data-id="${l.id}">✕</td>`;
+      body.appendChild(tr);
+    });
+    table.style.display = data.leads.length ? 'table' : 'none';
+  } catch (e) {
+    document.getElementById('leadMsg').textContent = 'Ошибка: ' + e.message;
+    document.getElementById('leadMsg').className = 'msg err';
+  }
+}
+
+document.getElementById('addLeadBtn').addEventListener('click', async () => {
+  const msg = document.getElementById('leadMsg');
+  const name = document.getElementById('leadName').value.trim();
+  const phone = document.getElementById('leadPhone').value.trim();
+  const source = document.getElementById('leadSource').value.trim();
+  msg.textContent = ''; msg.className = 'msg';
+  if (!name) { msg.textContent = 'Укажите имя.'; msg.className = 'msg err'; return; }
+  try {
+    const r = await fetch(`${BACKEND_URL}/api/client-leads`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-client-code': session.code },
+      body: JSON.stringify({ name, phone, source })
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || 'Ошибка');
+    document.getElementById('leadName').value = '';
+    document.getElementById('leadPhone').value = '';
+    document.getElementById('leadSource').value = '';
+    loadLeads();
+  } catch (e) {
+    msg.textContent = 'Ошибка: ' + e.message;
+    msg.className = 'msg err';
+  }
+});
+
+document.getElementById('leadsBody').addEventListener('click', async (e) => {
+  const td = e.target.closest('td.del');
+  if (!td) return;
+  await fetch(`${BACKEND_URL}/api/client-leads/${td.dataset.id}`, {
+    method: 'DELETE',
+    headers: { 'x-client-code': session.code }
+  });
+  loadLeads();
 });
 </script>
 </body>
