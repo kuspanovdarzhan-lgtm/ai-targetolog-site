@@ -321,31 +321,33 @@
   .trust-box p{color:var(--text-dim);font-size:13.5px;line-height:1.65;margin:0;}
   .trust-box strong{color:var(--text);}
 
-  /* ---------- Single pricing card ---------- */
+  /* ---------- Pricing cards ---------- */
+  .pricing-grid{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:stretch;}
   .pro-card{
-    max-width:420px;margin:0 auto;padding:28px 26px;border-radius:12px;
-    background:var(--bg-elev-2);border:1px solid var(--accent);box-shadow:inset 0 0 0 1px var(--accent);
+    flex:1 1 260px;max-width:286px;padding:22px 18px;border-radius:12px;
+    background:var(--bg-elev-2);border:1px solid var(--border);
+    display:flex;flex-direction:column;
   }
+  .pro-card.featured{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);}
   .pro-card .badge{
     font-family:var(--font-mono);font-size:9.5px;letter-spacing:.06em;
     color:var(--accent);border:1px solid var(--border);border-radius:4px;padding:2px 7px;
-    display:inline-block;margin-bottom:10px;
+    display:inline-block;margin-bottom:10px;align-self:flex-start;
   }
+  .pro-card .card-sub{font-size:12.5px;color:var(--text-dim);line-height:1.5;margin:0 0 16px;}
   .pro-card .name{font-family:var(--font-display);font-weight:700;font-size:20px;margin-bottom:12px;}
   .pro-card .price-label{font-size:11px;color:var(--text-dim);margin-bottom:2px;}
   .pro-card .price{font-family:var(--font-mono);font-weight:700;font-size:26px;font-variant-numeric:tabular-nums;}
+  .pro-card .price-breakdown{font-family:var(--font-mono);font-size:11px;color:var(--text-dim);margin-top:4px;}
   .pro-card .next{font-family:var(--font-mono);font-size:12px;color:var(--text-dim);margin-top:4px;margin-bottom:18px;font-variant-numeric:tabular-nums;}
   .feature-check{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;}
   .feature-check li{font-size:13.5px;color:var(--text);padding-left:20px;position:relative;line-height:1.5;}
   .feature-check li::before{content:"✓";position:absolute;left:0;color:var(--good);font-weight:700;}
-  .limits-box{
-    max-width:420px;margin:14px auto 0;padding:18px 20px;border-radius:10px;
-    background:var(--bg-elev);border:1px dashed var(--border);
-  }
-  .limits-box h5{font-family:var(--font-mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-dim);margin:0 0 10px;}
-  .limits-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;}
-  .limits-list li{font-size:12.5px;color:var(--text-dim);padding-left:14px;position:relative;line-height:1.5;}
+  .limits-list{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-direction:column;gap:6px;}
+  .limits-list li{font-size:12px;color:var(--text-dim);padding-left:14px;position:relative;line-height:1.5;}
   .limits-list li::before{content:"—";position:absolute;left:0;color:var(--text-dim);}
+  .pro-card .btn{margin-top:20px;width:100%;justify-content:center;text-decoration:none;}
+  .pricing-explainer{max-width:560px;margin:20px auto 0;text-align:center;color:var(--text-dim);font-size:13px;line-height:1.6;}
 
   /* ---------- Free trial widget ---------- */
   .trial-box{
@@ -474,37 +476,64 @@
 
   <section class="block">
     <div class="block-head">
-      <span class="num">03</span><h2>Тариф</h2>
-      <h3>Один тариф для первых клиентов Orbit</h3>
+      <span class="num">03</span><h2>Тарифы</h2>
+      <h3>Выберите удобный формат запуска</h3>
+      <p style="color:var(--text-dim);font-size:13.5px;margin:8px 0 0;line-height:1.6;">Начните с тестовой кампании или подключите полноценное ежемесячное ведение.</p>
     </div>
-    <div class="pro-card">
-      <span class="badge">ORBIT PRO</span>
-      <div class="price-label">1-й месяц</div>
-      <div class="price">59 990 ₸</div>
-      <div class="next">далее 39 990 ₸/мес</div>
-      <ul class="feature-check">
-        <li>Анализ ниши и аудитории</li>
-        <li>Рекламная стратегия</li>
-        <li>До 5 текстов объявлений</li>
-        <li>До 5 креативов</li>
-        <li>Настройка одной кампании</li>
-        <li>Ручной запуск специалистом в вашем кабинете</li>
-        <li>Еженедельный отчёт</li>
-        <li>Одна оптимизация в неделю</li>
-        <li>Поддержка в WhatsApp</li>
-      </ul>
+    <div class="pricing-grid">
+      <div class="pro-card">
+        <span class="badge">ORBIT TEST</span>
+        <p class="card-sub">Тестовый запуск для тех, кто хочет проверить Orbit без месячной подписки</p>
+        <div class="price-label">Единоразово</div>
+        <div class="price">29 990 ₸</div>
+        <ul class="feature-check" style="margin-top:18px;">
+          <li>Короткий анализ ниши и аудитории</li>
+          <li>2 рекламных текста</li>
+          <li>2 креатива</li>
+          <li>Настройка и ручной запуск специалистом — одна тестовая кампания</li>
+          <li>1 раунд правок</li>
+          <li>7 дней наблюдения</li>
+          <li>Короткий итоговый отчёт</li>
+        </ul>
+        <ul class="limits-list">
+          <li>Один бизнес, один рекламный кабинет</li>
+          <li>Одна тестовая кампания</li>
+          <li>Рекламный бюджет — отдельно, напрямую в Meta</li>
+          <li>Доступно первым 5 клиентам Orbit</li>
+        </ul>
+        <a class="btn btn-primary" id="waTest" href="#" target="_blank" rel="noopener">Запустить тест</a>
+      </div>
+
+      <div class="pro-card featured">
+        <span class="badge">ORBIT PRO · ПОЛНОЕ ВЕДЕНИЕ</span>
+        <p class="card-sub">Ежемесячное ведение рекламы под ключ</p>
+        <div class="price-label">Первый месяц</div>
+        <div class="price">59 990 ₸</div>
+        <div class="price-breakdown">Настройка и первый запуск 20 000 ₸ + ведение 39 990 ₸</div>
+        <div class="next">далее 39 990 ₸/мес</div>
+        <ul class="feature-check">
+          <li>Анализ ниши и аудитории</li>
+          <li>Полноценная рекламная стратегия</li>
+          <li>До 5 рекламных текстов</li>
+          <li>До 5 креативов</li>
+          <li>Настройка одной кампании в месяц</li>
+          <li>Ручной запуск специалистом в вашем кабинете</li>
+          <li>До 2 раундов правок</li>
+          <li>Еженедельный отчёт</li>
+          <li>Одна оптимизация в неделю</li>
+          <li>Поддержка в WhatsApp</li>
+        </ul>
+        <ul class="limits-list">
+          <li>Один бизнес, один рекламный кабинет</li>
+          <li>Одна кампания в месяц</li>
+          <li>Рекламный бюджет — отдельно, напрямую в Meta</li>
+          <li>Дополнительные кампании — оплачиваются отдельно</li>
+        </ul>
+        <a class="btn btn-primary" id="waPro" href="#" target="_blank" rel="noopener">Выбрать PRO</a>
+      </div>
     </div>
-    <div class="limits-box">
-      <h5>Что входит в рамки тарифа</h5>
-      <ul class="limits-list">
-        <li>Один бизнес, один рекламный кабинет</li>
-        <li>Одна кампания в месяц</li>
-        <li>До 5 креативов</li>
-        <li>До 2 раундов правок</li>
-        <li>Дополнительная кампания — оплачивается отдельно</li>
-      </ul>
-    </div>
-    <p class="tariff-note">Рекламный бюджет не входит в стоимость и оплачивается клиентом напрямую Meta, в своём рекламном кабинете.<br>Цена действует для первых 5 клиентов Orbit.<br>Оплата подписки — переводом на Kaspi после согласования деталей в WhatsApp. Доступ в кабинет выдаётся сразу после оплаты.</p>
+    <p class="pricing-explainer">ORBIT TEST подходит для первого знакомства с сервисом. Если вы захотите продолжить работу после теста, можно перейти на ORBIT PRO.</p>
+    <p class="tariff-note" style="max-width:560px;margin:16px auto 0;text-align:center;">Рекламный бюджет не входит в стоимость тарифов и оплачивается клиентом напрямую Meta, в своём рекламном кабинете. Оплата — переводом на Kaspi после согласования деталей в WhatsApp. Доступ в кабинет выдаётся сразу после оплаты.</p>
   </section>
 
   <section class="block">
@@ -524,7 +553,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr><td>Стоимость в месяц</td><td class="us">от 39 990 ₸</td><td>~200 000 ₸</td><td>300 000–500 000 ₸</td><td>0 ₸</td></tr>
+          <tr><td>Стоимость в месяц</td><td class="us">от 29 990 ₸ за тестовый запуск</td><td>~200 000 ₸</td><td>300 000–500 000 ₸</td><td>0 ₸</td></tr>
           <tr><td>Стратегия</td><td class="us">ИИ за 30 сек + проверка специалиста</td><td>Бриф + 2-3 дня</td><td>Готовый шаблон</td><td>Разбираетесь сами</td></tr>
           <tr><td>Тексты объявлений</td><td class="us">ИИ-Копирайтер, сразу</td><td>По мере загрузки</td><td>+ отдельный копирайтер</td><td>Пишете сами</td></tr>
           <tr><td>Креативы</td><td class="us">ИИ-Дизайнер</td><td>Ищет фрилансера</td><td>Штатный дизайнер</td><td>Canva</td></tr>
@@ -562,6 +591,11 @@
   document.getElementById('waBtnTop').href = href;
   document.getElementById('waBtnHero').href = href;
   document.getElementById('waBtnCta').href = href;
+
+  const TEST_TEXT = "Здравствуйте! Хочу запустить ORBIT TEST за 29 990 ₸. Ниша: ____. Город: ____. Планируемый рекламный бюджет: ____ ₸.";
+  const PRO_TEXT = "Здравствуйте! Хочу подключить ORBIT PRO. Ниша: ____. Город: ____. Планируемый рекламный бюджет: ____ ₸.";
+  document.getElementById('waTest').href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(TEST_TEXT)}`;
+  document.getElementById('waPro').href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(PRO_TEXT)}`;
 
   const BACKEND_URL = "https://ai-targetolog-backend.onrender.com";
   const trialBtn = document.getElementById('trialBtn');
