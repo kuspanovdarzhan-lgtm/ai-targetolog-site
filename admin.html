@@ -55,8 +55,8 @@
       <div><label>Имя клиента</label><input type="text" id="newName" placeholder="Например: Айгуль, суши-бар"></div>
       <div><label>Тариф</label>
         <select id="newTariff">
+          <option value="PRO" selected>PRO (текущий продаваемый тариф)</option>
           <option value="START">START</option>
-          <option value="PRO">PRO</option>
           <option value="MAX">MAX</option>
         </select>
       </div>
@@ -75,7 +75,7 @@
     <button class="btn btn-ghost" id="refreshBtn">Обновить список</button>
     <div class="msg" id="listMsg"></div>
     <table id="clientsTable" style="display:none;">
-      <thead><tr><th>Имя</th><th>Тариф</th><th>Код</th><th>Использовано сегодня</th><th>Статус</th><th></th></tr></thead>
+      <thead><tr><th>Имя</th><th>Тариф</th><th>Код</th><th>Использовано сегодня</th><th>Кампания</th><th>Статус</th><th></th></tr></thead>
       <tbody id="clientsBody"></tbody>
     </table>
   </div>
@@ -141,11 +141,15 @@ async function loadClients(){
       const tr = document.createElement('tr');
       const today = new Date().toISOString().slice(0,10);
       const used = c.usageDate === today ? c.usageUnits : 0;
+      const campaignLabel = { submitted: 'ожидает запуска', launched: 'запущена' }[c.campaignStatus] || '—';
+      const launchBtn = c.campaignStatus === 'submitted'
+        ? `<button class="mini" data-launch-id="${c.id}" style="border-color:var(--good);color:var(--good);">отметить запущенной</button>` : '';
       tr.innerHTML = `
         <td>${c.name}</td>
         <td>${c.tariff}</td>
         <td><code>${c.code}</code></td>
         <td>${used}</td>
+        <td>${campaignLabel} ${launchBtn}</td>
         <td>${c.active !== false ? 'активен' : 'выключен'}</td>
         <td><button class="mini" data-id="${c.id}" data-active="${c.active !== false}">${c.active !== false ? 'выключить' : 'включить'}</button></td>
       `;
@@ -161,6 +165,12 @@ async function loadClients(){
 }
 
 document.getElementById('clientsBody').addEventListener('click', async (e) => {
+  const launchBtn = e.target.closest('button[data-launch-id]');
+  if (launchBtn) {
+    await fetch(`${BACKEND_URL}/api/clients/${launchBtn.dataset.launchId}`, { method: 'PATCH', headers: adminHeaders(), body: JSON.stringify({ campaignStatus: 'launched' }) });
+    loadClients();
+    return;
+  }
   const btn = e.target.closest('button[data-id]');
   if (!btn) return;
   const id = btn.dataset.id;

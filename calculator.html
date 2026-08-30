@@ -188,7 +188,8 @@
   /* ---------- Tariffs ---------- */
   .rate-grid{
     display:grid;
-    grid-template-columns:repeat(3,1fr);
+    grid-template-columns:1fr;
+    max-width:360px;
     gap:8px;
   }
   .rate-row{
@@ -474,7 +475,7 @@
         <div class="sub">Из заявки в клиента</div>
       </div>
     </div>
-    <p class="hint">Ориентировочные показатели по нише — замените на свою статистику, когда она появится.</p>
+    <p class="hint">Иллюстративные цифры для примера расчёта, не результат исследования рынка — замените на свою реальную статистику, когда она появится (или уточните в WhatsApp).</p>
   </section>
 
   <section class="step">
@@ -504,8 +505,8 @@
     <div class="receipt-label">Прогноз на месяц</div>
     <div class="receipt-total" id="netProfit">0 ₸</div>
     <div class="receipt-sub">Чистая прибыль</div>
-    <span class="roi-pill">ROI <span id="roiOut">x0.0</span></span>
-    <p class="roi-note">Во сколько раз расходы окупаются прибылью — каждый вложенный тенге приносит указанное количество тенге прибыли.</p>
+    <span class="roi-pill">ROI <span id="roiOut">0%</span></span>
+    <p class="roi-note">Чистая прибыль как процент от всех расходов (реклама + подписка). 0% — вы вышли в ноль, выше нуля — в плюсе.</p>
 
     <hr class="divider-dashed">
 
@@ -534,6 +535,7 @@
       <input type="tel" id="leadPhone" placeholder="Телефон, например +7 700 000 00 00" required>
       <button type="submit">Оставить заявку</button>
       <p id="leadStatus" class="lead-status"></p>
+      <p style="font-size:11px;color:var(--text-dim);margin-top:8px;">Отправляя заявку, вы соглашаетесь с <a href="privacy.html" style="color:inherit;text-decoration:underline;">политикой конфиденциальности</a>.</p>
     </form>
   </div>
 
@@ -550,12 +552,10 @@
 
 const USD_KZT = 500;
 const WHATSAPP_NUMBER = "77055419138";
-const WHATSAPP_TEXT = "Здравствуйте, хочу узнать про Orbit — AI Targetologist";
+const WHATSAPP_TEXT = "Здравствуйте! Хочу получить бесплатный разбор бизнеса от Orbit. Ниша: ____. Город: ____. Планируемый рекламный бюджет: ____ ₸.";
 
 const TARIFFS = [
-  { id:"start", name:"START", badge:null,        first:24990, monthly:24990 },
-  { id:"pro",   name:"PRO",   badge:"ПОПУЛЯРНЫЙ", first:59990, monthly:39990 },
-  { id:"max",   name:"MAX",   badge:null,        first:99990, monthly:49990 },
+  { id:"pro", name:"ORBIT PRO", badge:null, first:59990, monthly:39990 },
 ];
 
 const NICHES = [
@@ -648,16 +648,16 @@ function calc(){
   const totalExpense = adExpense + subExpense;
 
   const net = gross - totalExpense;
-  const roi = totalExpense > 0 ? gross/totalExpense : 0;
+  const roi = totalExpense > 0 ? net/totalExpense : 0;
 
   const netEl = document.getElementById('netProfit');
   netEl.textContent = fmt(net);
   netEl.style.color = net >= 0 ? "var(--good)" : "var(--bad)";
 
   const roiPill = document.querySelector('.roi-pill');
-  roiPill.style.background = roi >= 1 ? "var(--good-bg)" : "var(--bad-bg)";
-  roiPill.style.color = roi >= 1 ? "var(--good)" : "var(--bad)";
-  document.getElementById('roiOut').textContent = "x" + roi.toFixed(1);
+  roiPill.style.background = roi >= 0 ? "var(--good-bg)" : "var(--bad-bg)";
+  roiPill.style.color = roi >= 0 ? "var(--good)" : "var(--bad)";
+  document.getElementById('roiOut').textContent = (roi >= 0 ? "+" : "") + Math.round(roi*100) + "%";
 
   document.getElementById('leadsOut').textContent = fmtN(leads);
   document.getElementById('salesOut').textContent = sales.toFixed(1);
@@ -700,7 +700,7 @@ function initLeadForm(){
           name, phone,
           niche: lastResult.niche ? lastResult.niche.label : '',
           message: lastResult.tariff
-            ? `Тариф: ${lastResult.tariff.name}. Прогноз прибыли: ${fmt(lastResult.net)}. ROI: x${lastResult.roi.toFixed(1)}.`
+            ? `Тариф: ${lastResult.tariff.name}. Прогноз прибыли: ${fmt(lastResult.net)}. ROI: ${lastResult.roi>=0?'+':''}${Math.round(lastResult.roi*100)}%.`
             : '',
           source: 'calculator',
         }),

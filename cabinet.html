@@ -74,6 +74,18 @@
     border-radius:5px;cursor:pointer;
   }
   .back-link{font-size:13px;color:var(--text-dim);text-decoration:none;display:inline-block;margin-bottom:18px;}
+  .status-pill{
+    display:inline-block;font-family:ui-monospace,Consolas,monospace;font-size:12px;
+    padding:5px 12px;border-radius:20px;background:var(--bg-elev-2);border:1px solid var(--border);
+    color:var(--text-dim);
+  }
+  .status-pill.active{color:var(--accent);border-color:var(--accent);}
+  .status-pill.done{color:var(--good);border-color:var(--good);}
+  .status-steps{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-direction:column;gap:6px;}
+  .status-steps li{font-size:12.5px;color:var(--text-dim);padding-left:20px;position:relative;}
+  .status-steps li.done{color:var(--good);}
+  .status-steps li.done::before{content:"✓";position:absolute;left:0;color:var(--good);font-weight:700;}
+  .status-steps li:not(.done)::before{content:"○";position:absolute;left:0;color:var(--border);}
   table.leads{width:100%;border-collapse:collapse;font-size:13px;margin-top:14px;}
   table.leads th,table.leads td{padding:8px 6px;text-align:left;border-bottom:1px solid var(--border);}
   table.leads th{color:var(--text-dim);font-size:10.5px;text-transform:uppercase;letter-spacing:.03em;}
@@ -102,6 +114,21 @@
         <div class="usage" id="usageBar"></div>
         <button class="btn-ghost" id="logoutBtn" style="border:none;background:none;color:var(--text-dim);font-size:12px;cursor:pointer;text-decoration:underline;">выйти</button>
       </div>
+    </div>
+
+    <div class="card">
+      <h2>Статус кампании</h2>
+      <span class="status-pill" id="statusPill">Бриф не заполнен</span>
+      <ul class="status-steps" id="statusSteps">
+        <li data-step="brief">Бриф заполнен</li>
+        <li data-step="materials">Материалы готовятся</li>
+        <li data-step="pending">Ожидает подтверждения</li>
+        <li data-step="submitted">Передано специалисту</li>
+        <li data-step="launched">Реклама запущена</li>
+      </ul>
+      <button class="btn" id="confirmBtn" style="margin-top:14px;width:100%;" disabled>Подтвердить и передать на запуск</button>
+      <div class="msg" id="confirmMsg"></div>
+      <p class="sub" style="margin-top:10px;">Кнопка не запускает рекламу автоматически — она отправляет запрос специалисту, который вручную проверит и запустит кампанию в вашем рекламном кабинете.</p>
     </div>
 
     <div class="card">
@@ -217,6 +244,43 @@ const BACKEND_URL = "https://ai-targetolog-backend.onrender.com";
 const loginCard = document.getElementById('login-card');
 const dashboard = document.getElementById('dashboard');
 let session = null; // {code, name, tariff, limit, usedToday}
+let campaignStatus = null; // null | 'submitted' | 'launched'
+let materialsGenerated = false;
+
+const STATUS_LABELS = {
+  none: 'Бриф не заполнен',
+  brief: 'Бриф заполнен',
+  pending: 'Ожидает подтверждения',
+  submitted: 'Передано специалисту',
+  launched: 'Реклама запущена',
+};
+
+function renderStatus(){
+  const pill = document.getElementById('statusPill');
+  const confirmBtn = document.getElementById('confirmBtn');
+  const niche = document.getElementById('niche').value.trim();
+
+  let current;
+  if (campaignStatus === 'launched') current = 'launched';
+  else if (campaignStatus === 'submitted') current = 'submitted';
+  else if (materialsGenerated) current = 'pending';
+  else if (niche) current = 'brief';
+  else current = 'none';
+
+  pill.textContent = STATUS_LABELS[current];
+  pill.className = 'status-pill' + (current === 'launched' ? ' done' : current !== 'none' ? ' active' : '');
+
+  const order = ['brief', 'materials', 'pending', 'submitted', 'launched'];
+  const doneUpTo = { none: -1, brief: 0, pending: 1, submitted: 3, launched: 4 }[current];
+  document.querySelectorAll('#statusSteps li').forEach((li, i) => {
+    li.classList.toggle('done', i <= doneUpTo);
+  });
+
+  confirmBtn.disabled = !(current === 'pending');
+  confirmBtn.textContent = current === 'submitted' || current === 'launched'
+    ? 'Уже передано специалисту'
+    : 'Подтвердить и передать на запуск';
+}
 
 function renderUsage(){
   document.getElementById('clientName').textContent = session.name;
@@ -241,6 +305,7 @@ async function login(code){
     dashboard.style.display = 'block';
     renderUsage();
     loadLeads();
+    loadCampaignStatus();
   } catch (e) {
     msg.textContent = e.message;
   }
@@ -344,6 +409,10 @@ async function callTool(tool){
     msgEl.textContent = '';
     session.usedToday += WEIGHTS[tool];
     renderUsage();
+    if (tool !== 'report' && campaignStatus === null) {
+      materialsGenerated = true;
+      renderStatus();
+    }
   } catch (e) {
     msgEl.textContent = 'Ошибка: ' + e.message;
     msgEl.className = 'msg err';
@@ -414,6 +483,51 @@ document.getElementById('leadsBody').addEventListener('click', async (e) => {
     headers: { 'x-client-code': session.code }
   });
   loadLeads();
+});
+
+async function loadCampaignStatus(){
+  try {
+    const r = await fetch(`${BACKEND_URL}/api/campaign/status`, {
+      headers: { 'x-client-code': session.code }
+    });
+    const data = await r.json();
+    if (r.ok) {
+      campaignStatus = data.status;
+      if (data.brief) {
+        document.getElementById('niche').value = data.brief.niche || '';
+        document.getElementById('audience').value = data.brief.audience || '';
+        document.getElementById('budget').value = data.brief.budget || '';
+        document.getElementById('offer').value = data.brief.offer || '';
+        document.getElementById('notes').value = data.brief.notes || '';
+      }
+    }
+  } catch (e) { /* тихо игнорируем — статус не критичен для остального кабинета */ }
+  renderStatus();
+}
+
+document.getElementById('niche').addEventListener('input', renderStatus);
+
+document.getElementById('confirmBtn').addEventListener('click', async () => {
+  const msg = document.getElementById('confirmMsg');
+  const b = brief();
+  msg.textContent = ''; msg.className = 'msg';
+  if (!b.niche) { msg.textContent = 'Укажите нишу в брифе.'; msg.className = 'msg err'; return; }
+  try {
+    const r = await fetch(`${BACKEND_URL}/api/campaign/confirm`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-client-code': session.code },
+      body: JSON.stringify({ niche: b.niche, audience: b.audience, budget: b.budget, offer: b.offer, notes: b.notes })
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || 'Ошибка');
+    campaignStatus = data.status;
+    renderStatus();
+    msg.textContent = 'Передано специалисту — он свяжется с вами для запуска.';
+    msg.className = 'msg ok';
+  } catch (e) {
+    msg.textContent = 'Ошибка: ' + e.message;
+    msg.className = 'msg err';
+  }
 });
 </script>
 </body>

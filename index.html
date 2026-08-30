@@ -3,7 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Orbit — AI Targetologist: реклама, тексты и креативы под управлением ИИ</title>
+<title>Orbit — AI Targetologist: запустим рекламу за 48 часов</title>
+<meta name="description" content="Orbit создаёт стратегию, рекламные тексты и креативы с помощью ИИ, а специалист проверяет материалы и запускает кампанию в вашем Meta Ads Manager. Реклама для малого бизнеса в Казахстане.">
+<meta property="og:title" content="Orbit — AI Targetologist">
+<meta property="og:description" content="Запустим рекламу для вашего бизнеса за 48 часов. Orbit создаёт стратегию и креативы, специалист проверяет и запускает кампанию в вашем рекламном кабинете.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ru_RU">
 <style>
 
   @font-face{
@@ -316,6 +321,32 @@
   .trust-box p{color:var(--text-dim);font-size:13.5px;line-height:1.65;margin:0;}
   .trust-box strong{color:var(--text);}
 
+  /* ---------- Single pricing card ---------- */
+  .pro-card{
+    max-width:420px;margin:0 auto;padding:28px 26px;border-radius:12px;
+    background:var(--bg-elev-2);border:1px solid var(--accent);box-shadow:inset 0 0 0 1px var(--accent);
+  }
+  .pro-card .badge{
+    font-family:var(--font-mono);font-size:9.5px;letter-spacing:.06em;
+    color:var(--accent);border:1px solid var(--border);border-radius:4px;padding:2px 7px;
+    display:inline-block;margin-bottom:10px;
+  }
+  .pro-card .name{font-family:var(--font-display);font-weight:700;font-size:20px;margin-bottom:12px;}
+  .pro-card .price-label{font-size:11px;color:var(--text-dim);margin-bottom:2px;}
+  .pro-card .price{font-family:var(--font-mono);font-weight:700;font-size:26px;font-variant-numeric:tabular-nums;}
+  .pro-card .next{font-family:var(--font-mono);font-size:12px;color:var(--text-dim);margin-top:4px;margin-bottom:18px;font-variant-numeric:tabular-nums;}
+  .feature-check{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;}
+  .feature-check li{font-size:13.5px;color:var(--text);padding-left:20px;position:relative;line-height:1.5;}
+  .feature-check li::before{content:"✓";position:absolute;left:0;color:var(--good);font-weight:700;}
+  .limits-box{
+    max-width:420px;margin:14px auto 0;padding:18px 20px;border-radius:10px;
+    background:var(--bg-elev);border:1px dashed var(--border);
+  }
+  .limits-box h5{font-family:var(--font-mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-dim);margin:0 0 10px;}
+  .limits-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;}
+  .limits-list li{font-size:12.5px;color:var(--text-dim);padding-left:14px;position:relative;line-height:1.5;}
+  .limits-list li::before{content:"—";position:absolute;left:0;color:var(--text-dim);}
+
   /* ---------- Free trial widget ---------- */
   .trial-box{
     margin:0 auto 8px;padding:24px 22px;border:1px solid var(--accent);border-radius:12px;
@@ -352,11 +383,11 @@
 
 <header class="hero">
   <p class="eyebrow">ORBIT</p>
-  <h1>Реклама, тексты и креативы под управлением ИИ</h1>
-  <p class="lead">Один сервис вместо таргетолога, копирайтера, дизайнера и смм-щика: разбирает рынок, пишет объявления, собирает креативы и запускает рекламу в Instagram и Facebook — вы только подтверждаете.</p>
+  <h1>Запустим рекламу для вашего бизнеса за 48 часов</h1>
+  <p class="lead">Orbit создаёт стратегию, рекламные тексты и креативы. Специалист всё проверяет и запускает кампанию в вашем Meta Ads Manager после подтверждения.</p>
   <div class="hero-ctas">
-    <a class="btn btn-primary" href="calculator.html">Рассчитать окупаемость →</a>
-    <a class="btn btn-ghost" id="waBtnHero" href="#" target="_blank" rel="noopener">Написать в WhatsApp</a>
+    <a class="btn btn-primary" id="waBtnHero" href="#" target="_blank" rel="noopener">Получить бесплатный разбор →</a>
+    <a class="btn btn-ghost" href="calculator.html">Рассчитать окупаемость</a>
   </div>
 </header>
 
@@ -378,42 +409,46 @@
   <section class="block">
     <div class="block-head">
       <span class="num">01</span><h2>Как это работает</h2>
-      <h3>От брифа до запущенной кампании — без агентств и созвонов</h3>
+      <h3>От брифа до запущенной кампании — за 48 часов</h3>
     </div>
     <div class="steps-list">
       <div class="step-row">
         <div class="step-num">01</div>
         <div><h4>Бриф <span class="step-time">2 мин</span></h4>
-        <p>Коротко описываете нишу, продукт, бюджет и целевого клиента — прямо в чате, без анкет на 10 страниц.</p></div>
+        <p>Заполняете короткий бриф про нишу, продукт, бюджет и целевого клиента — без анкет на 10 страниц.</p></div>
       </div>
       <div class="step-row">
         <div class="step-num">02</div>
-        <div><h4>ИИ-Стратег собирает стратегию <span class="step-time">30 сек</span></h4>
-        <p>Смотрит, кто уже рекламируется в нише, по какой цене и с каким посылом — и предлагает сегменты аудитории и позиционирование.</p></div>
+        <div><h4>Orbit готовит материалы</h4>
+        <p>Стратегия, рекламные тексты и креативы — на основе вашего брифа.</p></div>
       </div>
       <div class="step-row">
         <div class="step-num">03</div>
-        <div><h4>ИИ-Копирайтер и ИИ-Дизайнер собирают кампанию <span class="step-time">~2 мин</span></h4>
-        <p>Несколько вариантов текстов объявлений и креативы под них — готово к показу, а не черновик для правок.</p></div>
+        <div><h4>Вы подтверждаете</h4>
+        <p>Смотрите кампанию и рекламный бюджет целиком и подтверждаете — или просите поправить.</p></div>
       </div>
       <div class="step-row">
         <div class="step-num">04</div>
-        <div><h4>Согласование и запуск <span class="step-time">1 мин</span></h4>
-        <p>Вы видите кампанию целиком — тексты, креативы, бюджет — и подтверждаете. На START запускаете сами в своём рекламном кабинете. На PRO и MAX это делает специалист Orbit — в вашем аккаунте, после вашего согласия.</p></div>
+        <div><h4>Специалист запускает</h4>
+        <p>Проверяет материалы и запускает рекламу в вашем Meta Ads Manager — в вашем аккаунте, под вашим бюджетом.</p></div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">05</div>
+        <div><h4>Еженедельный отчёт</h4>
+        <p>Каждую неделю — разбор результатов и рекомендации, что менять дальше.</p></div>
       </div>
     </div>
-    <p class="steps-total">Итого — <b>около 5 минут</b> от брифа до запущенной кампании.</p>
   </section>
 
   <section class="block">
     <div class="block-head">
-      <span class="num">02</span><h2>6 ИИ-инструментов внутри Orbit</h2>
-      <h3>То, что раньше делала команда из нескольких специалистов</h3>
+      <span class="num">02</span><h2>5 ИИ-инструментов + контроль специалиста</h2>
+      <h3>То, что раньше делала команда из нескольких человек</h3>
     </div>
     <div class="tool-grid">
       <div class="tool-card">
         <h4>ИИ-Стратег</h4>
-        <p>Анализ рынка и конкурентов, сегменты аудитории и позиционирование — за секунды, а не за дни брифинга.</p>
+        <p>Разбор ниши, сегменты аудитории и позиционирование — за секунды, а не за дни брифинга.</p>
       </div>
       <div class="tool-card">
         <h4>ИИ-Копирайтер</h4>
@@ -421,10 +456,9 @@
       </div>
       <div class="tool-card">
         <h4>ИИ-Дизайнер</h4>
-        <p>Креативы под объявления — баннеры и карточки под форматы Instagram и Facebook.</p>
+        <p>Креативы под объявления — под форматы Instagram и Facebook.</p>
       </div>
       <div class="tool-card">
-        <span class="tool-badge">PRO/MAX</span>
         <h4>Контент-план</h4>
         <p>План публикаций на месяц вперёд, чтобы аккаунт не молчал между рекламными заходами.</p>
       </div>
@@ -432,60 +466,45 @@
         <h4>Отчёты и заявки</h4>
         <p>Заявки — в одном месте в кабинете. Вставьте цифры кампании — ИИ разберёт результат и скажет, что менять.</p>
       </div>
-      <div class="tool-card">
-        <span class="tool-badge">PRO/MAX</span>
-        <h4>Личный запуск</h4>
-        <p>На PRO и MAX специалист лично проверяет материалы и запускает кампанию в вашем рекламном кабинете — сами вы только подтверждаете. Бюджет Meta оплачиваете напрямую сами, отдельно от подписки.</p>
-      </div>
+    </div>
+    <div class="trust-box" style="margin-top:16px;">
+      <p><strong>Плюс живой человек, а не только ИИ.</strong> Orbit формирует рекламные гипотезы — стратегию, тексты, креативы. Перед запуском их проверяет специалист, и он же запускает кампанию в вашем Meta Ads Manager после вашего подтверждения. Результат рекламы зависит от ниши, предложения, бюджета и работы вашего отдела продаж — это не гарантия заявок, а рабочий процесс, который снимает с вас рутину.</p>
     </div>
   </section>
 
   <section class="block">
     <div class="block-head">
-      <span class="num">03</span><h2>Тарифы</h2>
-      <h3>Выбирайте по масштабу задач</h3>
+      <span class="num">03</span><h2>Тариф</h2>
+      <h3>Один тариф для первых клиентов Orbit</h3>
     </div>
-    <div class="rate-grid">
-      <div class="rate-row">
-        <span class="badge"></span>
-        <div class="name">START</div>
-        <div class="price-label">1-й месяц</div>
-        <div class="price">24 990 ₸</div>
-        <div class="next">далее 24 990 ₸/мес</div>
-        <ul class="rate-features">
-          <li>ИИ-Стратег и ИИ-Копирайтер</li>
-          <li>ИИ-Дизайнер — базовые креативы</li>
-          <li>Запускаете кампанию сами в своём рекламном кабинете</li>
-        </ul>
-      </div>
-      <div class="rate-row active">
-        <span class="badge">ПОПУЛЯРНЫЙ</span>
-        <div class="name">PRO</div>
-        <div class="price-label">1-й месяц</div>
-        <div class="price">59 990 ₸</div>
-        <div class="next">далее 39 990 ₸/мес</div>
-        <ul class="rate-features">
-          <li>Всё из START, расширенные лимиты</li>
-          <li>Специалист сам запускает кампанию в вашем кабинете</li>
-          <li>Контент-план на месяц</li>
-          <li>Поддержка в WhatsApp</li>
-        </ul>
-      </div>
-      <div class="rate-row">
-        <span class="badge"></span>
-        <div class="name">MAX</div>
-        <div class="price-label">1-й месяц</div>
-        <div class="price">99 990 ₸</div>
-        <div class="next">далее 49 990 ₸/мес</div>
-        <ul class="rate-features">
-          <li>Всё из PRO</li>
-          <li>Расширенный запуск кампаний</li>
-          <li>Лендинг под ключ</li>
-          <li>Личный менеджер</li>
-        </ul>
-      </div>
+    <div class="pro-card">
+      <span class="badge">ORBIT PRO</span>
+      <div class="price-label">1-й месяц</div>
+      <div class="price">59 990 ₸</div>
+      <div class="next">далее 39 990 ₸/мес</div>
+      <ul class="feature-check">
+        <li>Анализ ниши и аудитории</li>
+        <li>Рекламная стратегия</li>
+        <li>До 5 текстов объявлений</li>
+        <li>До 5 креативов</li>
+        <li>Настройка одной кампании</li>
+        <li>Ручной запуск специалистом в вашем кабинете</li>
+        <li>Еженедельный отчёт</li>
+        <li>Одна оптимизация в неделю</li>
+        <li>Поддержка в WhatsApp</li>
+      </ul>
     </div>
-    <p class="tariff-note">Цена тарифа — за работу Orbit и специалиста. Рекламный бюджет в Meta (показы, клики) — отдельно, вы оплачиваете его напрямую в своём рекламном кабинете. Точный состав каждого тарифа уточняйте в WhatsApp — цифры выше ориентировочные.<br>Оплата подписки — переводом на Kaspi после согласования деталей в WhatsApp. Доступ в кабинет выдаётся сразу после оплаты.</p>
+    <div class="limits-box">
+      <h5>Что входит в рамки тарифа</h5>
+      <ul class="limits-list">
+        <li>Один бизнес, один рекламный кабинет</li>
+        <li>Одна кампания в месяц</li>
+        <li>До 5 креативов</li>
+        <li>До 2 раундов правок</li>
+        <li>Дополнительная кампания — оплачивается отдельно</li>
+      </ul>
+    </div>
+    <p class="tariff-note">Рекламный бюджет не входит в стоимость и оплачивается клиентом напрямую Meta, в своём рекламном кабинете.<br>Цена действует для первых 5 клиентов Orbit.<br>Оплата подписки — переводом на Kaspi после согласования деталей в WhatsApp. Доступ в кабинет выдаётся сразу после оплаты.</p>
   </section>
 
   <section class="block">
@@ -505,40 +524,40 @@
           </tr>
         </thead>
         <tbody>
-          <tr><td>Стоимость в месяц</td><td class="us">от 24 990 ₸</td><td>~200 000 ₸</td><td>300 000–500 000 ₸</td><td>0 ₸</td></tr>
-          <tr><td>Стратегия</td><td class="us">ИИ за 30 сек</td><td>Бриф + 2-3 дня</td><td>Готовый шаблон</td><td>Разбираетесь сами</td></tr>
+          <tr><td>Стоимость в месяц</td><td class="us">от 39 990 ₸</td><td>~200 000 ₸</td><td>300 000–500 000 ₸</td><td>0 ₸</td></tr>
+          <tr><td>Стратегия</td><td class="us">ИИ за 30 сек + проверка специалиста</td><td>Бриф + 2-3 дня</td><td>Готовый шаблон</td><td>Разбираетесь сами</td></tr>
           <tr><td>Тексты объявлений</td><td class="us">ИИ-Копирайтер, сразу</td><td>По мере загрузки</td><td>+ отдельный копирайтер</td><td>Пишете сами</td></tr>
           <tr><td>Креативы</td><td class="us">ИИ-Дизайнер</td><td>Ищет фрилансера</td><td>Штатный дизайнер</td><td>Canva</td></tr>
-          <tr><td>Доступность</td><td class="us">24/7 + проверка специалистом</td><td>Рабочие часы</td><td>Рабочие часы</td><td>—</td></tr>
+          <tr><td>Запуск кампании</td><td class="us">Вручную специалистом, в вашем кабинете</td><td>Рабочие часы</td><td>Рабочие часы</td><td>—</td></tr>
           <tr><td>Отчётность</td><td class="us">Каждую неделю, с рекомендациями</td><td>По запросу</td><td>По графику агентства</td><td>Смотрите в кабинете сами</td></tr>
-          <tr><td>Отпуск, болезнь, замена специалиста</td><td class="us">Не влияет на работу</td><td>Кампания встаёт на паузу</td><td>Меняется исполнитель</td><td>—</td></tr>
         </tbody>
       </table>
     </div>
   </section>
 
   <div class="trust-box">
-    <p><strong>Orbit только запускается в Казахстане.</strong> Мы не показываем придуманные отзывы и цифры — честнее сказать прямо: сервис новый, первые кампании уже в работе. Если хотите быть в числе первых клиентов — напишите в WhatsApp, разберём вашу нишу бесплатно.</p>
+    <p><strong>Orbit создан Даржаном Куспановым в Казахстане.</strong> Проект находится на этапе первых запусков, поэтому мы не публикуем выдуманные отзывы. Первые клиенты получают специальную цену в обмен на разрешение оформить результаты в качестве кейса.</p>
   </div>
 
   <div class="cta">
-    <h3>Посчитайте, сколько это принесёт именно вам</h3>
-    <p>Калькулятор окупаемости — 2 минуты, чтобы увидеть прогноз заявок, продаж и прибыли под вашу нишу.</p>
+    <h3>Получите бесплатный разбор вашего бизнеса</h3>
+    <p>Опишите нишу в WhatsApp — покажем, с чего начнём, до какой-либо оплаты.</p>
     <div class="hero-ctas">
-      <a class="btn btn-primary" href="calculator.html">Рассчитать окупаемость →</a>
-      <a class="btn btn-ghost" id="waBtnCta" href="#" target="_blank" rel="noopener">Написать в WhatsApp</a>
+      <a class="btn btn-primary" id="waBtnCta" href="#" target="_blank" rel="noopener">Получить бесплатный разбор →</a>
+      <a class="btn btn-ghost" href="calculator.html">Рассчитать окупаемость</a>
     </div>
   </div>
 
   <footer>
-    <p>Курс USD/KZT принят за 500 (замените на актуальный). Цифры на странице ориентировочные — для точного расчёта под ваш бизнес свяжитесь с нами.</p>
+    <p>Курс USD/KZT принят за 500 (замените на актуальный). Цифры на странице ориентировочные — для точного расчёта под ваш бизнес свяжитесь с нами. Результат рекламы не гарантируется и зависит от ниши, предложения, бюджета и работы отдела продаж клиента.</p>
+    <p style="margin-top:8px;"><a href="privacy.html">Политика конфиденциальности</a></p>
   </footer>
 
 </div>
 
 <script>
   const WHATSAPP_NUMBER = "77055419138";
-  const WHATSAPP_TEXT = "Здравствуйте, хочу узнать про Orbit — AI Targetologist";
+  const WHATSAPP_TEXT = "Здравствуйте! Хочу получить бесплатный разбор бизнеса от Orbit. Ниша: ____. Город: ____. Планируемый рекламный бюджет: ____ ₸.";
   const href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_TEXT)}`;
   document.getElementById('waBtnTop').href = href;
   document.getElementById('waBtnHero').href = href;
