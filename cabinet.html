@@ -122,6 +122,12 @@
       <input type="text" id="offer" placeholder="Скидка 20% в честь открытия">
       <label>Доп. детали</label>
       <textarea id="notes" placeholder="Необязательно"></textarea>
+      <label>Язык текстов (Стратег, Копирайтер, Контент-план)</label>
+      <select id="briefLanguage">
+        <option value="ru">Русский</option>
+        <option value="kz">Қазақша</option>
+      </select>
+      <p class="sub" style="margin:8px 0 0;">Казахский пока в бета-режиме — проверяйте текст перед отправкой клиенту.</p>
     </div>
 
     <div class="card">
@@ -265,6 +271,7 @@ function brief(){
     budget: document.getElementById('budget').value.trim(),
     offer: document.getElementById('offer').value.trim(),
     notes: document.getElementById('notes').value.trim(),
+    language: document.getElementById('briefLanguage').value,
   };
 }
 
@@ -283,13 +290,13 @@ async function callTool(tool){
   let url, body;
   if (tool === 'strategy') {
     url = `${BACKEND_URL}/api/strategy`;
-    body = { niche: b.niche, audience: b.audience, budget: b.budget, notes: b.notes };
+    body = { niche: b.niche, audience: b.audience, budget: b.budget, notes: b.notes, language: b.language };
   } else if (tool === 'copy') {
     url = `${BACKEND_URL}/api/copy`;
-    body = { product: b.niche, audience: b.audience, offer: b.offer };
+    body = { product: b.niche, audience: b.audience, offer: b.offer, language: b.language };
   } else if (tool === 'contentPlan') {
     url = `${BACKEND_URL}/api/content-plan`;
-    body = { niche: b.niche, audience: b.audience, notes: b.notes };
+    body = { niche: b.niche, audience: b.audience, notes: b.notes, language: b.language };
   } else if (tool === 'report') {
     const spend = document.getElementById('repSpend').value.trim();
     if (!spend) { msgEl.textContent = 'Укажите расход — без него не с чем сравнивать остальное.'; msgEl.className = 'msg err'; return; }
