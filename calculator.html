@@ -188,8 +188,8 @@
   /* ---------- Tariffs ---------- */
   .rate-grid{
     display:grid;
-    grid-template-columns:1fr;
-    max-width:360px;
+    grid-template-columns:repeat(2,1fr);
+    max-width:420px;
     gap:8px;
   }
   .rate-row{
@@ -434,13 +434,10 @@
   footer p b{color:var(--text);}
   footer p:last-child{margin-bottom:0;font-family:var(--font-mono);}
 
-  @media (max-width:560px){
-    .rate-grid{grid-template-columns:1fr;}
-    .rate-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;}
-    .rate-row .name{margin-bottom:0;}
-    .rate-row .badge{position:absolute;top:-9px;left:12px;margin:0;background:var(--bg);padding:0 4px;}
-    .rate-row .price-label{display:none;}
-    .rate-row .next{margin-top:2px;}
+  @media (max-width:420px){
+    .rate-grid{gap:6px;}
+    .rate-row{padding:12px 8px;}
+    .rate-row .badge{font-size:8.5px;}
   }
 </style>
 </head>
@@ -458,6 +455,12 @@
   <section class="step">
     <div class="step-head"><span class="num">01</span><h2>Выберите тариф</h2></div>
     <div class="rate-grid" id="tariffs"></div>
+    <div id="proPhaseRow" style="display:none;margin-top:10px;">
+      <select class="niche" id="proPhaseSelect">
+        <option value="first">Первый месяц — 59 990 ₸</option>
+        <option value="continue">Продолжение — 39 990 ₸/мес</option>
+      </select>
+    </div>
   </section>
 
   <section class="step">
@@ -555,7 +558,8 @@ const WHATSAPP_NUMBER = "77055419138";
 const WHATSAPP_TEXT = "Здравствуйте! Хочу получить бесплатный разбор бизнеса от Orbit. Ниша: ____. Город: ____. Планируемый рекламный бюджет: ____ ₸.";
 
 const TARIFFS = [
-  { id:"pro", name:"ORBIT PRO", badge:null, first:59990, monthly:39990 },
+  { id:"test", name:"ORBIT TEST", badge:null, cost:29990, sub:"единоразово" },
+  { id:"pro",  name:"ORBIT PRO",  badge:"ПОЛНОЕ ВЕДЕНИЕ", cost:59990, sub:"первый месяц" },
 ];
 
 const NICHES = [
@@ -579,10 +583,15 @@ const NICHES = [
 
 /* ====== ЛОГИКА ====== */
 
-let state = { tariffId:"pro", niche:NICHES[0], check:25000, margin:50, budget:300 };
+let state = { tariffId:"pro", proPhase:"first", niche:NICHES[0], check:25000, margin:50, budget:300 };
 
 const fmt = n => Math.round(n).toLocaleString('ru-RU') + " ₸";
 const fmtN = n => Math.round(n).toLocaleString('ru-RU');
+
+function tariffCost(){
+  if (state.tariffId === 'test') return 29990;
+  return state.proPhase === 'first' ? 59990 : 39990;
+}
 
 function renderTariffs(){
   const el = document.getElementById('tariffs');
@@ -590,15 +599,24 @@ function renderTariffs(){
     <div class="rate-row ${t.id===state.tariffId?'active':''}" data-id="${t.id}">
       <span class="badge">${t.badge?t.badge:''}</span>
       <div class="name">${t.name}</div>
-      <div class="price-label">1-й месяц</div>
-      <div class="price">${fmtN(t.first)} ₸</div>
-      <div class="next">далее ${fmtN(t.monthly)} ₸/мес</div>
+      <div class="price-label">${t.sub}</div>
+      <div class="price">${fmtN(t.cost)} ₸</div>
     </div>
   `).join('');
   el.querySelectorAll('.rate-row').forEach(node=>{
-    node.addEventListener('click', ()=>{ state.tariffId = node.dataset.id; renderTariffs(); calc(); });
+    node.addEventListener('click', ()=>{
+      state.tariffId = node.dataset.id;
+      document.getElementById('proPhaseRow').style.display = state.tariffId === 'pro' ? 'block' : 'none';
+      renderTariffs(); calc();
+    });
   });
+  document.getElementById('proPhaseRow').style.display = state.tariffId === 'pro' ? 'block' : 'none';
 }
+
+document.getElementById('proPhaseSelect').addEventListener('change', (e) => {
+  state.proPhase = e.target.value;
+  calc();
+});
 
 function renderNiches(){
   const sel = document.getElementById('nicheSelect');
@@ -644,7 +662,7 @@ function calc(){
   const gross = revenue * (state.margin/100);
 
   const adExpense = state.budget * USD_KZT;
-  const subExpense = (tariff.first + tariff.monthly*2) / 3;
+  const subExpense = tariffCost();
   const totalExpense = adExpense + subExpense;
 
   const net = gross - totalExpense;
@@ -668,7 +686,10 @@ function calc(){
   document.getElementById('subExpOut').textContent = fmt(subExpense);
   document.getElementById('totalExpOut').textContent = fmt(totalExpense);
 
-  lastResult = { tariff, niche, net, roi };
+  const tariffLabel = tariff.id === 'pro'
+    ? `ORBIT PRO (${state.proPhase === 'first' ? 'первый месяц' : 'продолжение'})`
+    : tariff.name;
+  lastResult = { tariff, tariffLabel, niche, net, roi };
 }
 
 function initWhatsApp(){
@@ -700,7 +721,7 @@ function initLeadForm(){
           name, phone,
           niche: lastResult.niche ? lastResult.niche.label : '',
           message: lastResult.tariff
-            ? `Тариф: ${lastResult.tariff.name}. Прогноз прибыли: ${fmt(lastResult.net)}. ROI: ${lastResult.roi>=0?'+':''}${Math.round(lastResult.roi*100)}%.`
+            ? `Тариф: ${lastResult.tariffLabel}. Прогноз прибыли: ${fmt(lastResult.net)}. ROI: ${lastResult.roi>=0?'+':''}${Math.round(lastResult.roi*100)}%.`
             : '',
           source: 'calculator',
         }),
