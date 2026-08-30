@@ -372,6 +372,7 @@
     </div>
     <div class="trial-msg" id="trialMsg"></div>
     <div class="trial-out" id="trialOut"></div>
+    <a class="btn btn-primary" id="trialCta" href="#" target="_blank" rel="noopener" style="display:none;margin-top:14px;">Понравилось? Написать в WhatsApp →</a>
   </div>
 
   <section class="block">
@@ -548,6 +549,7 @@
   const trialNiche = document.getElementById('trialNiche');
   const trialMsg = document.getElementById('trialMsg');
   const trialOut = document.getElementById('trialOut');
+  const trialCta = document.getElementById('trialCta');
 
   async function runTrial(){
     const niche = trialNiche.value.trim();
@@ -568,6 +570,9 @@
       trialOut.textContent = data.text;
       trialOut.className = 'trial-out show';
       trialMsg.textContent = '';
+      const ctaText = `Здравствуйте, попробовал бесплатный анализ Orbit для ниши "${niche}" — хочу оформить доступ`;
+      trialCta.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(ctaText)}`;
+      trialCta.style.display = 'inline-flex';
     } catch (e) {
       trialMsg.textContent = e.message;
       trialMsg.className = 'trial-msg err';
